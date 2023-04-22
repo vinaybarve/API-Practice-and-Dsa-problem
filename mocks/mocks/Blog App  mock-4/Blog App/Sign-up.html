@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <form onsubmit="Register()">
+      <input type="text" placeholder="Name" id="name" />
+      <input type="text" placeholder="Avatar" id="avatar" />
+      <input type="text" placeholder="Email" id="email" />
+      <input type="text" placeholder="Password" id="password" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+<script>
+  const Register = async () => {
+    event.preventDefault();
+    const obj = {
+      Username: document.getElementById("name").value,
+      Avatar: document.getElementById("avatar").value,
+      Email: document.getElementById("email").value,
+      Password: document.getElementById("password").value,
+    };
+    fetch(`http://localhost:3000/users`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        alert("Register Sucessful");
+        window.location.href = "./Sign-in.html";
+      })
+      .catch((err) => {
+        alert("Not Register");
+        console.log(err);
+      });
+  };
+</script>

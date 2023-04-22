@@ -1,0 +1,59 @@
+{
+  "posts": [
+    {
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/d/d1/Marvel_sup_heroes_01.jpg",
+      "book_name": "captain marvel",
+      "author": "stan lee",
+      "genre": "Fiction",
+      "edition": "2020",
+      "publisher": "dont know",
+      "cost": 300,
+      "borrowed": true,
+      "id": 3
+    },
+    {
+      "image_url": "https://cdn.marvel.com/u/prod/marvel/i/mg/6/90/5a664c954a55b/portrait_uncanny.jpg",
+      "book_name": "spiderman",
+      "author": "stan lee",
+      "genre": "Fiction",
+      "edition": "2020",
+      "publisher": "dont know",
+      "cost": 2300,
+      "borrowed": false,
+      "id": 4
+    },
+    {
+      "image_url": "https://static01.nyt.com/images/2019/05/11/arts/10marvel/merlin_154333758_6b5754ef-bfc8-489b-85e9-a263da92229a-superJumbo.jpg",
+      "book_name": "all books",
+      "author": "stan lee",
+      "genre": "Fiction",
+      "edition": "2020",
+      "publisher": "dont know",
+      "cost": 500,
+      "borrowed": false,
+      "id": 5
+    },
+    {
+      "image_url": "http://graphics.wsj.com/avengers/thumbs/429.jpg",
+      "book_name": "the avengers",
+      "author": "stan lee",
+      "genre": "Fiction",
+      "edition": "2020",
+      "publisher": "dont know",
+      "cost": 3000,
+      "borrowed": false,
+      "id": 6
+    },
+    {
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/d/d1/Marvel_sup_heroes_01.jpg",
+      "book_name": "captain marvel",
+      "author": "stan lee",
+      "genre": "History",
+      "edition": "2020",
+      "publisher": "dont know",
+      "cost": 2335,
+      "borrowed": false,
+      "id": 7
+    }
+  ]
+}

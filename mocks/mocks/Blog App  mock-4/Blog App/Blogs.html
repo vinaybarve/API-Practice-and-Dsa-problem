@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+
+  <body>
+    <h1>Blog</h1>
+    <a href="./Leaderboard.html">Leader board</a>
+    <a href="./AddBlog.html">Add Blog</a>
+
+    <select id="filter" onchange="sortAndFilter()">
+      <option value="">Filter</option>
+      <option value="Business">Business</option>
+      <option value="Tech">Tech</option>
+      <option value="Lifestyle">Lifestyle</option>
+      <option value="Entertainment">Entertainment</option>
+    </select>
+    <select id="order" onchange="sortAndFilter()">
+      <option value="">Sort</option>
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+    <input
+      type="text"
+      placeholder="Search"
+      id="search"
+      oninput="searchFunction()"
+    />
+    <div id="container"></div>
+  </body>
+</html>
+<script>
+  const isAuth = localStorage.getItem("isAuth");
+
+  if (isAuth !== "true") {
+    alert("Please Login");
+    window.location.href = "Sign-in.html";
+  }
+
+  const getData = async (query, filter, order) => {
+    let url = `http://localhost:3000/blogs/?q=${query}`;
+
+    if (filter !== "") {
+      url = `http://localhost:3000/blogs/?q=${query}&category=${filter}`;
+    }
+    if (order !== "") {
+      url = `http://localhost:3000/blogs/?q=${query}&_sort=date&_order=${order}`;
+    }
+    if (filter !== "" && order !== "") {
+      url = `http://localhost:3000/blogs/?q=${query}&category=${filter}&_sort=date&_order=${order}`;
+    }
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => AppendData(res))
+      .catch((err) => console.log(err));
+  };
+
+  const AppendData = (arr) => {
+    let container = document.getElementById("container");
+
+    container.innerHTML = null;
+    arr.map((ele) => {
+      const card = document.createElement("div");
+      card.style.border = "1px solid red";
+
+      card.innerHTML = `
+                <h5>User name : ${ele.username}</h5>
+                <p>Title : ${ele.title}</p>
+                <p>Content : ${ele.content}</p>
+                <p>Category : ${ele.category}</p>
+                <p>Date : ${ele.date}</p>
+            `;
+      const like = document.createElement("button");
+      like.innerText = `❤️${ele.likes}`;
+      like.addEventListener("click", function () {
+        likeFunction(ele.id, ele.likes + 1);
+      });
+
+      const input = document.createElement("input");
+      input.setAttribute("id", "comment");
+
+      const commentSendBtn = document.createElement("button");
+      commentSendBtn.innerText = "Send";
+      commentSendBtn.addEventListener("click", function () {
+        commentFunction(ele.id, ele.comments);
+      });
+
+      const comment = document.createElement("button");
+      comment.innerText = `💌${ele.comments.length}`;
+      comment.addEventListener("click", function () {
+        card.append(input);
+        card.append(commentSendBtn);
+      });
+
+      const commentsDiv = document.createElement("div");
+
+      ele.comments.map((item) => {
+        const commentCard = document.createElement("div");
+
+        commentCard.innerHTML = `
+                <h3>${item.username}</h3>
+                <p>${item.comment}</p>
+                `;
+        commentsDiv.append(commentCard);
+      });
+      
+
+      let user = localStorage.getItem("userName");
+
+      const editBtn = document.createElement("button");
+      editBtn.innerText = "Edit";
+      editBtn.addEventListener("click", function () {
+        createModal(ele);
+      });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerText = "Delete";
+      deleteBtn.addEventListener("click", function () {
+        deleteFunction(ele.id);
+      });
+
+      if (user == ele.username) {
+        card.append(editBtn, deleteBtn);
+      }
+
+      card.append(like);
+      card.append(comment);
+      card.append(commentsDiv);
+      container.append(card);
+    });
+  };
+
+  const likeFunction = async (id, like) => {
+    let obj = {
+      likes: like,
+    };
+
+    await fetch(`http://localhost:3000/blogs/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log("Liked"))
+      .catch((err) => console.log(err));
+  };
+
+  const commentFunction = async (id, comments) => {
+    let comment = document.getElementById("comment").value;
+
+    let commentObj = {
+      username: localStorage.getItem("userName"),
+      comment,
+    };
+    comments.push(commentObj);
+
+    let sendObj = {
+      comments,
+    };
+
+    await fetch(`http://localhost:3000/blogs/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(sendObj),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log("Comment has been added"))
+      .catch((err) => console.log(err));
+  };
+
+  const createModal = (payload) => {
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("modal-content");
+
+    const closeBtn = document.createElement("span");
+    closeBtn.classList.add("close");
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", closeModal);
+
+    const modalTitle = document.createElement("h2");
+    modalTitle.textContent = payload.username;
+
+    const modalForm = document.createElement("form");
+    modalForm.addEventListener("submit", function () {
+      event.preventDefault();
+      editFunction(payload.id, payload);
+    });
+
+    modalForm.innerHTML = `
+        <input type="text" placeholder="Title" id="title">
+        <textarea id="content"></textarea>
+        <select id="category">
+            <option value="">Category</option>
+            <option value="Business">Business</option>
+            <option value="Tech">Tech</option>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="Entertainment">Entertainment</option>
+        </select>
+        <input type="date" id="date">
+        <input type="submit">
+        `;
+
+    modalContent.appendChild(closeBtn);
+    modalContent.appendChild(modalTitle);
+    modalContent.appendChild(modalForm);
+    modal.appendChild(modalContent);
+
+    document.body.appendChild(modal);
+
+    modal.style.display = "block";
+  };
+
+  const closeModal = () => {
+    const modal = document.querySelector(".modal");
+    document.body.removeChild(modal);
+  };
+
+  const editFunction = async (id, ele) => {
+    event.preventDefault();
+    let obj = {
+      title: document.getElementById("title").value || ele.title,
+      content: document.getElementById("content").value || ele.content,
+      category: document.getElementById("category").value || ele.category,
+      date: document.getElementById("date").value || ele.date,
+    };
+
+    await fetch(`http://localhost:3000/blogs/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log("Updated"))
+      .catch((err) => console.log(err));
+  };
+
+  const deleteFunction = async (id) => {
+    await fetch(`http://localhost:3000/blogs/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => console.log("deleted"))
+      .catch((err) => console.log(err));
+  };
+
+  const sortAndFilter = () => {
+    const filter = document.getElementById("filter").value;
+
+    const order = document.getElementById("order").value;
+
+    if ((filter, order)) {
+      getData("", filter, order);
+    } else if (filter) {
+      getData("", filter, "");
+    } else if (order) {
+      getData("", "", order);
+    } else {
+      getData("", "", "");
+    }
+  };
+
+  const searchFunction = () => {
+    const search = document.getElementById("search").value;
+
+    getData(search, "", "");
+  };
+
+  getData("", "", "");
+</script>

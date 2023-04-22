@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <form onsubmit="Login()">
+      <input type="text" id="email" placeholder="Email" />
+      <input type="text" id="password" placeholder="Password" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+<script>
+  const Login = async () => {
+    event.preventDefault();
+
+    Email = document.getElementById("email").value;
+    Password = document.getElementById("password").value;
+
+    let isAuth = false;
+    let userName = "";
+
+    fetch("http://localhost:3000/users")
+      .then((res) => res.json())
+      .then((res) => {
+        res &&
+          res.map((ele) => {
+            if (ele.Email == Email && ele.Password == Password) {
+              localStorage.setItem("user", JSON.stringify(ele));
+              isAuth = true;
+              userName = ele.Username;
+            }
+          });
+      })
+      .then((res) => {
+        if (isAuth) {
+          localStorage.setItem("isAuth", "true");
+          localStorage.setItem("userName", userName);
+          window.location.href = "Blogs.html";
+          alert("login successful");
+        } else {
+          alert("login failed");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+</script>

@@ -1,0 +1,32 @@
+#pagin{
+    display: flex;
+}
+#mainContainer{
+    margin: 10px;
+}
+.card{
+    width: 300px;
+    height: 350px;
+    border: 1px solid red;
+}
+.card>img{
+    width: 50%;
+    margin: auto;
+}
+.mainContainer{
+    display: grid;
+    grid-template-rows: repeat(auto,1fr);
+    grid-template-columns: repeat(4,1fr);
+}
+.product{
+    width: 100%;
+    border: 1px solid red;
+    text-align: center;
+}
+.product>img{
+    width: 100%;
+}
+
+.display_none{
+    display: none;
+}

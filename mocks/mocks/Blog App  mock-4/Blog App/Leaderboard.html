@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>Leader Board</h3>
+    <div id="container"></div>
+</body>
+
+</html>
+<script>
+    const getData = async () => {
+        await fetch('http://localhost:3000/blogs/')
+            .then(res => res.json())
+            .then(res => {
+                let userObject = {};
+
+                res.forEach(item => {
+                    if (!userObject[item.username]) {
+                        userObject[item.username] = [];
+                    }
+                    userObject[item.username].push(item);
+                });
+
+                for (let key in userObject) {
+                    appendData(userObject[key])
+                }
+            })
+    }
+
+
+    const appendData = (arr) => {
+        const container = document.getElementById('container')
+
+        const card = document.createElement('div')
+        card.style.border = '1px solid black'
+
+        card.innerHTML = `
+            <p>user name :${arr[0].username}</p>
+            <p>total post :${arr.length}</p>    
+            <p>total likes :${getTotalLikes(arr)}</p>
+        <p>total comments :${getTotalComments(arr)}</p>
+            `
+        container.append(card)
+
+    }
+
+    const getTotalLikes = (arr) => {
+        let sum = 0
+        arr.map((ele) => {
+            sum += ele.likes
+        })
+
+        return sum
+    }
+
+    const getTotalComments = (arr) => {
+        let sum = 0
+        arr.map((ele) => {
+            sum += ele.comments.length
+        })
+
+        return sum
+    }
+
+    getData()
+</script>

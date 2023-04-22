@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <h1>Add Products</h1>
+      <input type="url" id="image" placeholder="type image url" />
+      <input type="text" id="id" placeholder="type id" />
+      <input type="text" id="title" placeholder="type title" />
+      <input type="text" id="brand" placeholder="type brand" />
+      <input type="number" id="price" placeholder="type price" />
+      <button onclick="addProduct()">Add Products</button>
+    </div>
+
+    <div>
+      <h1>delete Products</h1>
+
+      <input type="text" id="idDelete" placeholder="delete id" />
+
+      <button onclick="deleteProduct()">Delete Products</button>
+    </div>
+
+    <div>
+      <h1>Put Request</h1>
+      <p>here you pass entire obj as payload</p>
+
+      <input type="text" id="idPut" placeholder="Put id" />
+
+      <button onclick="putProduct()">Put Products</button>
+    </div>
+
+    <div>
+      <h1>Patch Request</h1>
+      <p>
+        here you pass key value pairs which you want to modify obj as payload
+      </p>
+
+      <input type="text" id="idpatch" placeholder="patch id" />
+      <button onclick="patchProduct()">Patch Products</button>
+    </div>
+  </body>
+</html>
+<script src="./admin.js"></script>

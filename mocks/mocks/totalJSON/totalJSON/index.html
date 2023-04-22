@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./index.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body>
+    <div id="container">
+        <a href="./admin.html" ><button>Admin</button></a>
+        <div>
+            <h2>Sort</h2>
+            <select id="sorting">
+                <option value="">slect by price</option>
+                <option  value="asc">Low to High</option>
+                <option value="desc">High to Low</option>
+            </select>
+        </div>
+        
+
+        <div>
+            <h2>Filter</h2>
+            <select id="filtering">
+                <option value="">filter by brand </option>
+                <option  value="adidas">Adidas</option>
+                <option value="nike">Nike</option>
+            </select>
+        </div>
+        <div>
+            <input type="search" id="query" placeholder="Search Characters" oninput=debounce(search,1000) />
+        </div>
+        <div id="loading" class="display_none">
+            <h1>Loading.....</h1>
+        </div>
+        <div id="mainContainer"  class="mainContainer">
+
+        </div>
+        <div id="pagin">
+            <button id="prev">Prev</button>
+            <span id="page">1</span>
+            <button id="next">Next</button>
+        </div>
+    </div>
+    
+</body>
+</html>
+<script src="./index.js"></script>

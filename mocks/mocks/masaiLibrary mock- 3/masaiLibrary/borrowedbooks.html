@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    #container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .card2 {
+      border: 2px solid navy;
+      padding: 10px;
+      line-height: 1em;
+      margin: auto;
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+  <body>
+    <h1>borrowed books</h1>
+    <div id="container"></div>
+  </body>
+</html>
+<script>
+  const getData = async () => {
+    await fetch(`http://localhost:3000/posts`)
+      .then((res) => res.json())
+      .then((res) => appendData(res))
+      .catch((err) => console.log(err));
+  };
+
+  const appendData = (arr) => {
+    const filterData = arr.filter((ele) => {
+      return ele.borrowed == true;
+    });
+
+    const container = document.querySelector("#container");
+
+    filterData.map((ele) => {
+      const card = document.createElement("div");
+      card.setAttribute("class", "card2");
+
+      card.innerHTML = `
+        <div>
+            <img width="200px" src=${ele.image_url} />
+        </div>
+        <div>
+            <h3>${ele.book_name}</h3>
+            <p>${ele.author}</p>
+            <p>${ele.genre}</p>
+            <p>${ele.edition}</p>
+            <p>${ele.publisher}</p>
+            <p>${ele.cost}</p>
+        </div>
+        `;
+
+      container.append(card);
+    });
+  };
+
+  getData();
+</script>

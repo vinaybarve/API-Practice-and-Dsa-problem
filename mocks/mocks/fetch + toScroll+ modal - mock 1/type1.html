@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    #container {
+      /* border: 1px solid red; */
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    #container > div {
+      border: 1px solid rgb(157, 158, 157);
+    }
+
+    #container img {
+      width: 100%;
+      height: 300px;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 300px;
+    }
+
+    .modal {
+      width: 200px;
+      height: 150px;
+      border: 5px solid red;
+      border-radius: 5px;
+      position: fixed;
+      top: -50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 1s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    .show_modal {
+      top: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      font-size: 15px;
+      font-weight: bold;
+      background-color: gray;
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="container"></div>
+    <div class="loading">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Loading_2.gif?20170503175831"
+        alt=""
+      />
+    </div>
+  </body>
+</html>
+<script>
+  let container = document.getElementById("container");
+  let page = 1;
+  const getData = async () => {
+    await fetch(
+      `https://mirsat-vercel-database.vercel.app/sportszonedata?_page=${page}&_limit=10`
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        const data = res;
+        // console.log(data);
+        appendData(data);
+      });
+  };
+  getData();
+
+  const appendData = (arr) => {
+    arr.map(({ image1, title, brand, price, color }) => {
+      let card = document.createElement("div");
+      card.setAttribute("id", "card");
+
+      let image = document.createElement("img");
+      image.src = image1;
+
+      let Title = document.createElement("p");
+      Title.innerText = title;
+
+      let Button = document.createElement("button");
+      Button.innerText = "read more";
+      Button.setAttribute("class", "helloworld");
+
+      let modal = document.createElement("div");
+      modal.setAttribute("class", "modal");
+
+      let Brand = document.createElement("p");
+      Brand.innerText = `brand:${brand}`;
+
+      
+      let Price = document.createElement("p");
+      Price.innerText = `price:${price}`;
+
+
+      let Category = document.createElement("p");
+      Category.innerText = `category:${color}`;
+
+
+      let close = document.createElement("button");
+      close.innerHTML = "❌";
+      close.setAttribute("class", "close");
+
+
+      modal.append(close, Brand, Price, Category);
+
+      Button.addEventListener("click", () => {
+        modal.classList.toggle("show_modal");
+        console.log(modal.className);
+      });
+
+      close.addEventListener("click", () => {
+        modal.classList.remove("show_modal");
+        console.log("hello babu1");
+      });
+
+      card.append(image, Title, Button);
+      container.append(card, modal);
+    });
+  };
+
+  window.addEventListener("scroll", () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 5) {
+      page++;
+      getData();
+    }
+  });
+</script>
